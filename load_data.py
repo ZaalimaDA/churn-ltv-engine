@@ -50,5 +50,17 @@ print(df.columns.tolist())
 print(df.head(3))
 
 # Load into PostgreSQL
-df.to_sql("customers", engine, if_exists="replace", index=False)
-print("✅ Data loaded successfully into telco_churn_db!")
+from sqlalchemy import text
+
+with engine.connect() as conn:
+    result = conn.execute(text("SELECT current_user, current_database()"))
+    print("Connected as:", result.fetchone())
+
+df.to_sql(
+    "customers",
+    engine,
+    if_exists="replace",
+    index=False
+)
+
+print("Data loaded successfully!")
