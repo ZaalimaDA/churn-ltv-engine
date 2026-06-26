@@ -1,0 +1,58 @@
+============================================================
+FEATURE ENGINEERING — FEATURE 1
+============================================================
+Dataset Loaded Successfully
+Rows    : 7043
+Columns : 44
+
+Existing 'charge_per_tenure' found. Recalculating feature...
+✓ Feature created successfully.
+
+Feature Statistics
+----------------------------------------
+count    7043.00
+mean       61.17
+std        61.02
+min         9.18
+25%        26.27
+50%        61.15
+75%        84.94
+max      1397.48
+Name: charge_per_tenure, dtype: float64
+
+Missing Values : 0
+Duplicate Rows : 0
+
+✓ Updated dataset saved successfully.
+
+Verification (First 5 Values)
+   charge_per_tenure
+0          14.925000
+1          53.985714
+2          36.050000
+3          40.016304
+4          50.550000
+
+============================================================
+Feature Engineering Pipeline Completed Successfully
+FEATURE ENGINEERING REPORT
+============================================================
+Feature Name               : charge_per_tenure
+Formula                    : total_charges / (tenure + 1)
+Total Customers            : 7043
+Average Value              : 61.17
+Median Value               : 61.15
+Minimum Value              : 9.18
+Maximum Value              : 1397.47
+Top 25% High Charge-per-Tenure Customers : 1761
+
+Business Findings:
+----------------------------------------
+• Successfully engineered the 'charge_per_tenure' feature by combining customer tenure and total spending.
+• The feature captures customer spending intensity throughout their relationship with the company.
+• Customers with higher charge_per_tenure have contributed more revenue relative to their tenure and can be analyzed as potential high-value customers.
+• Extremely high values may occur for customers with short tenure and high initial charges, making them important candidates for further churn analysis.
+• This engineered feature provides additional business information beyond using total_charges or tenure independently.
+• The feature will be included in the machine learning model to evaluate its contribution to customer churn prediction.
+
+✓ Feature Engineering completed successfully.
