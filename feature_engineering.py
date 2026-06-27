@@ -82,3 +82,29 @@ plt.savefig(f"{OUTPUT_DIR}/02_service_count.png", dpi=150, bbox_inches="tight")
 plt.close()
 print(f"Plot saved: {OUTPUT_DIR}/02_service_count.png")
 
+# Feature 3: charge_to_value_ratio
+print("\n" + "=" * 60)
+print("FEATURE 3 — charge_to_value_ratio")
+print("=" * 60)
+
+df["charge_to_value_ratio"] = (df["monthly_charges"] / (df["service_count"] + 1)).round(4)
+
+print(f"\nFormula  : monthly_charges / (service_count + 1)")
+print(f"Min/Max  : {df['charge_to_value_ratio'].min():.2f} / {df['charge_to_value_ratio'].max():.2f}")
+print(f"Mean by churn:\n{df.groupby('churn')['charge_to_value_ratio'].mean().round(2)}")
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+for val, color, label in [("No", "#2196F3", "Retained"), ("Yes", "#F44336", "Churned")]:
+    df[df["churn"] == val]["charge_to_value_ratio"].plot.kde(
+        ax=axes[0], color=color, label=label, linewidth=2.5)
+axes[0].set_title("charge_to_value_ratio Distribution by Churn")
+axes[0].set_xlabel("Charge to Value Ratio ($)")
+axes[0].legend()
+sns.boxplot(data=df, x="churn", y="charge_to_value_ratio", ax=axes[1],
+            palette={"No": "#2196F3", "Yes": "#F44336"})
+axes[1].set_title("charge_to_value_ratio Spread by Churn")
+plt.suptitle("Feature 3: charge_to_value_ratio", fontsize=14, fontweight="bold")
+plt.tight_layout()
+plt.savefig(f"{OUTPUT_DIR}/03_charge_to_value_ratio.png", dpi=150, bbox_inches="tight")
+plt.close()
+print(f"Plot saved: {OUTPUT_DIR}/03_charge_to_value_ratio.png")
