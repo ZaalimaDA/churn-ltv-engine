@@ -134,36 +134,9 @@ plt.savefig(f"{OUTPUT_DIR}/04_support_dependency_score.png", dpi=150, bbox_inche
 plt.close()
 print(f"Plot saved: {OUTPUT_DIR}/04_support_dependency_score.png")
 
-#Feature 5: digital_engagement_score
+#Feature 5: tenure_contract_risk
 print("\n" + "=" * 60)
-print("FEATURE 5 — digital_engagement_score")
-print("=" * 60)
- 
-digital_cols = ["streaming_tv", "streaming_movies", "online_security", "online_backup"]
-df["digital_engagement_score"] = df[digital_cols].apply(lambda row: (row == "Yes").sum(), axis=1)
- 
-print(f"\nFormula  : count of digital/streaming services (0-4)")
-print(f"Min/Max  : {df['digital_engagement_score'].min()} / {df['digital_engagement_score'].max()}")
-print(f"Mean by churn:\n{df.groupby('churn')['digital_engagement_score'].mean().round(2)}")
- 
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-de_churn = df.groupby(["digital_engagement_score", "churn"]).size().unstack(fill_value=0)
-de_pct = de_churn.div(de_churn.sum(axis=1), axis=0) * 100
-de_pct.plot(kind="bar", stacked=True, ax=axes[0], color=["#2196F3", "#F44336"], edgecolor="white", rot=0)
-axes[0].set_title("Churn Rate by Digital Engagement Score")
-axes[0].set_xlabel("Digital Services (0-4)")
-axes[0].legend(title="Churn", labels=["No", "Yes"])
-sns.boxplot(data=df, x="churn", y="digital_engagement_score", ax=axes[1], palette={"No": "#2196F3", "Yes": "#F44336"})
-axes[1].set_title("Digital Engagement Spread by Churn")
-plt.suptitle("Feature 5: digital_engagement_score", fontsize=14, fontweight="bold")
-plt.tight_layout()
-plt.savefig(f"{OUTPUT_DIR}/05_digital_engagement_score.png", dpi=150, bbox_inches="tight")
-plt.close()
-print(f"Plot saved: {OUTPUT_DIR}/05_digital_engagement_score.png")
-
-#Feature 6: tenure_contract_risk
-print("\n" + "=" * 60)
-print("FEATURE 6 — tenure_contract_risk")
+print("FEATURE 5 — tenure_contract_risk")
 print("=" * 60)
  
 df["tenure_norm"]   = df["tenure"] / df["tenure"].max()
@@ -183,11 +156,11 @@ axes[0].set_xlabel("Risk Score (0=low, 1=high)")
 axes[0].legend()
 sns.boxplot(data=df, x="churn", y="tenure_contract_risk", ax=axes[1], palette={"No": "#2196F3", "Yes": "#F44336"})
 axes[1].set_title("Tenure-Contract Risk Spread by Churn")
-plt.suptitle("Feature 6: tenure_contract_risk", fontsize=14, fontweight="bold")
+plt.suptitle("Feature 5: tenure_contract_risk", fontsize=14, fontweight="bold")
 plt.tight_layout()
-plt.savefig(f"{OUTPUT_DIR}/06_tenure_contract_risk.png", dpi=150, bbox_inches="tight")
+plt.savefig(f"{OUTPUT_DIR}/05_tenure_contract_risk.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"Plot saved: {OUTPUT_DIR}/06_tenure_contract_risk.png")
+print(f"Plot saved: {OUTPUT_DIR}/05_tenure_contract_risk.png")
 
 # Correlation Summary
 print("\n" + "=" * 60)
@@ -196,7 +169,7 @@ print("=" * 60)
  
 df["churn_binary"] = (df["churn"] == "Yes").astype(int)
 engineered = ["charge_per_tenure", "service_count", "charge_to_value_ratio",
-              "support_dependency_score", "digital_engagement_score", "tenure_contract_risk"]
+              "support_dependency_score", "tenure_contract_risk"]
  
 correlations = df[engineered + ["churn_binary"]].corr()["churn_binary"].drop("churn_binary")
 print("\nPearson Correlation with Churn:")
@@ -219,9 +192,9 @@ for i, v in enumerate(correlations.values):
                  ha="left" if v >= 0 else "right", fontsize=9)
 plt.suptitle("Engineered Feature Correlations with Churn", fontsize=14, fontweight="bold")
 plt.tight_layout()
-plt.savefig(f"{OUTPUT_DIR}/07_feature_correlations.png", dpi=150, bbox_inches="tight")
+plt.savefig(f"{OUTPUT_DIR}/06_feature_correlations.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"\nPlot saved: {OUTPUT_DIR}/07_feature_correlations.png")
+print(f"\nPlot saved: {OUTPUT_DIR}/06_feature_correlations.png")
 
 # Save to PostgreSQL
 df_save = df.drop(columns=["tenure_norm", "contract_norm", "churn_binary"], errors="ignore")
