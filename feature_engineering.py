@@ -82,3 +82,31 @@ plt.savefig(f"{OUTPUT_DIR}/02_service_count.png", dpi=150, bbox_inches="tight")
 plt.close()
 print(f"Plot saved: {OUTPUT_DIR}/02_service_count.png")
 
+# ════════════════════════════════════════════════════════════════════════════
+# FEATURE 4: support_dependency_score
+# ════════════════════════════════════════════════════════════════════════════
+print("\n" + "=" * 60)
+print("FEATURE 4 — support_dependency_score")
+print("=" * 60)
+ 
+support_cols = ["online_security", "device_protection", "tech_support", "online_backup"]
+df["support_dependency_score"] = df[support_cols].apply(lambda row: (row == "Yes").sum(), axis=1)
+ 
+print(f"\nFormula  : count of support/protection services (0-4)")
+print(f"Min/Max  : {df['support_dependency_score'].min()} / {df['support_dependency_score'].max()}")
+print(f"Mean by churn:\n{df.groupby('churn')['support_dependency_score'].mean().round(2)}")
+ 
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+sd_churn = df.groupby(["support_dependency_score", "churn"]).size().unstack(fill_value=0)
+sd_pct = sd_churn.div(sd_churn.sum(axis=1), axis=0) * 100
+sd_pct.plot(kind="bar", stacked=True, ax=axes[0], color=["#2196F3", "#F44336"], edgecolor="white", rot=0)
+axes[0].set_title("Churn Rate by Support Dependency Score")
+axes[0].set_xlabel("Support Services (0-4)")
+axes[0].legend(title="Churn", labels=["No", "Yes"])
+sns.boxplot(data=df, x="churn", y="support_dependency_score", ax=axes[1], palette={"No": "#2196F3", "Yes": "#F44336"})
+axes[1].set_title("Support Dependency Spread by Churn")
+plt.suptitle("Feature 4: support_dependency_score", fontsize=14, fontweight="bold")
+plt.tight_layout()
+plt.savefig(f"{OUTPUT_DIR}/04_support_dependency_score.png", dpi=150, bbox_inches="tight")
+plt.close()
+print(f"Plot saved: {OUTPUT_DIR}/04_support_dependency_score.png")
