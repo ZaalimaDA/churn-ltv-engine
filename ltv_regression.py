@@ -278,3 +278,97 @@ print(f"Test  : {X_test.shape[0]} rows")
 scaler_ltv     = StandardScaler()
 X_train_scaled = scaler_ltv.fit_transform(X_train)
 X_test_scaled  = scaler_ltv.transform(X_test)
+
+# ════════════════════════════════════════════════════════════════════════════
+# PART 4 — REGRESSION MODEL TRAINING
+# ════════════════════════════════════════════════════════════════════════════
+print("\n" + "=" * 65)
+print("PART 4 — REGRESSION MODEL TRAINING")
+print("=" * 65)
+ 
+reg_results = {}
+ 
+def evaluate_regressor(name, y_true, y_pred):
+    mae   = mean_absolute_error(y_true, y_pred)
+    rmse  = np.sqrt(mean_squared_error(y_true, y_pred))
+    r2    = r2_score(y_true, y_pred)
+    mape  = np.mean(np.abs((y_true - y_pred) / (y_true + 1))) * 100
+    return {"mae": mae, "rmse": rmse, "r2": r2, "mape": mape}
+ 
+# ── MODEL 1: Linear Regression ────────────────────────────────────────────
+print("\n--- Model 1: Linear Regression ---")
+lr_reg = LinearRegression()
+lr_reg.fit(X_train_scaled, y_train)
+y_pred_lr = lr_reg.predict(X_test_scaled)
+metrics_lr = evaluate_regressor("Linear Regression", y_test, y_pred_lr)
+reg_results["Linear Regression"] = {
+    "model": lr_reg, "y_pred": y_pred_lr, **metrics_lr}
+print(f"  MAE  : ${metrics_lr['mae']:,.2f}")
+print(f"  RMSE : ${metrics_lr['rmse']:,.2f}")
+print(f"  R²   : {metrics_lr['r2']:.4f}")
+print(f"  MAPE : {metrics_lr['mape']:.2f}%")
+joblib.dump(lr_reg,      f"{MODELS_DIR}/ltv_linear_regression.pkl")
+joblib.dump(scaler_ltv,  f"{MODELS_DIR}/ltv_scaler.pkl")
+print(f"  Saved: {MODELS_DIR}/ltv_linear_regression.pkl")
+ 
+# ── MODEL 2: Random Forest Regressor ─────────────────────────────────────
+print("\n--- Model 2: Random Forest Regressor ---")
+rf_reg = RandomForestRegressor(
+    n_estimators=200,
+    max_depth=12,
+    min_samples_split=5,
+    min_samples_leaf=2,
+    random_state=42,
+    n_jobs=-1,
+)
+rf_reg.fit(X_train, y_train)
+y_pred_rf = rf_reg.predict(X_test)
+metrics_rf = evaluate_regressor("Random Forest", y_test, y_pred_rf)
+reg_results["Random Forest"] = {
+    "model": rf_reg, "y_pred": y_pred_rf, **metrics_rf}
+print(f"  MAE  : ${metrics_rf['mae']:,.2f}")
+print(f"  RMSE : ${metrics_rf['rmse']:,.2f}")
+print(f"  R²   : {metrics_rf['r2']:.4f}")
+print(f"  MAPE : {metrics_rf['mape']:.2f}%")
+joblib.dump(rf_reg, f"{MODELS_DIR}/ltv_random_forest.pkl")
+print(f"  Saved: {MODELS_DIR}/ltv_random_forest.pkl")
+ 
+# ── MODEL 3: XGBoost Regressor ────────────────────────────────────────────
+print("\n--- Model 3: XGBoost Regressor ---")
+xgb_reg = XGBRegressor(
+    n_estimators=300,
+    max_depth=6,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    min_child_weight=3,
+    reg_alpha=0.1,        # L1 regularisation
+    reg_lambda=1.0,       # L2 regularisation
+    random_state=42,
+    verbosity=0,
+)
+xgb_reg.fit(X_train, y_train)
+y_pred_xgb = xgb_reg.predict(X_test)
+metrics_xgb = evaluate_regressor("XGBoost", y_test, y_pred_xgb)
+reg_results["XGBoost"] = {
+    "model": xgb_reg, "y_pred": y_pred_xgb, **metrics_xgb}
+print(f"  MAE  : ${metrics_xgb['mae']:,.2f}")
+print(f"  RMSE : ${metrics_xgb['rmse']:,.2f}")
+print(f"  R²   : {metrics_xgb['r2']:.4f}")
+print(f"  MAPE : {metrics_xgb['mape']:.2f}%")
+joblib.dump(xgb_reg, f"{MODELS_DIR}/ltv_xgboost.pkl")
+print(f"  Saved: {MODELS_DIR}/ltv_xgboost.pkl")
+ 
+# ── Cross-validation (R² score) ───────────────────────────────────────────
+print("\n5-Fold Cross-Validation (R²):")
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+for name, v in reg_results.items():
+    if name == "Linear Regression":
+        cv_scores = cross_val_score(
+            v["model"], X_train_scaled, y_train, cv=kf, scoring="r2")
+    else:
+        cv_scores = cross_val_score(
+            v["model"], X_train, y_train, cv=kf, scoring="r2")
+    print(f"  {name:<22}: mean R²={cv_scores.mean():.4f}  "
+          f"std={cv_scores.std():.4f}")
+
