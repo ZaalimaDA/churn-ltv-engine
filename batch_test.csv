@@ -1,0 +1,6 @@
+tenure,monthly_charges,total_charges,contract,internet_service,payment_method,gender,senior_citizen,partner,dependents,paperless_billing,phone_service,multiple_lines,online_security,online_backup,device_protection,tech_support,streaming_tv,streaming_movies
+12,65.50,786.00,Month-to-month,Fiber optic,Electronic check,Male,0,No,No,Yes,Yes,No,No,No,No,No,No,No
+48,45.20,2169.60,One year,DSL,Bank transfer (automatic),Female,0,Yes,Yes,No,Yes,Yes,Yes,No,Yes,No,No,No
+70,89.10,6237.00,Two year,Fiber optic,Credit card (automatic),Male,1,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes
+3,20.05,60.15,Month-to-month,No,Mailed check,Female,0,No,No,No,Yes,No,No,No,No,No,No,No
+24,55.75,1338.00,One year,DSL,Electronic check,Male,0,Yes,Yes,Yes,Yes,No,Yes,Yes,No,Yes,No,No
