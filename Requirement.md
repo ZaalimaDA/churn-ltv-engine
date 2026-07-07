@@ -1,3 +1,17 @@
+pandas
+numpy
+matplotlib
+seaborn
+joblib
+scikit-learn
+xgboost
+sqlalchemy
+psycopg2-binary
+python-dotenv
+shap
+fastapi
+uvicorn
+
 fastapi==0.111.0
 uvicorn[standard]==0.30.1
 pydantic==2.7.1
