@@ -11,3 +11,16 @@ python-dotenv
 shap
 fastapi
 uvicorn
+
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.1
+sqlalchemy==2.0.30
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.0
+xgboost==2.0.3
+joblib==1.4.2
+python-multipart==0.0.9
