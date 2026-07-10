@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment files (never bake credentials into image)
+.env
+.env.*
+
+# Data files (large — not needed in image)
+*.csv
+*.zip
+
+# Output folders (generated at runtime)
+eda_outputs/
+preprocessing_outputs/
+feature_engineering_outputs/
+model_outputs/
+shap_outputs/
+ltv_outputs/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Docs
+docs/
+README.md
+*.docx
+*.pdf
+
+# Test files
+test_connection.py
+batch_test.csv
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+

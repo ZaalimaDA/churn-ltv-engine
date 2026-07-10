@@ -264,7 +264,27 @@ main.py  →  app/routers/single.py   (single-customer endpoints)
 uvicorn main:app --reload
 # Swagger UI → http://localhost:8000/docs
 ```
+## 🐳 Running with Docker
 
+### Prerequisites
+- Docker Desktop installed and running
+
+### Start all services
+```bash
+docker compose up --build
+```
+
+### Access points
+| Service | URL |
+|---------|-----|
+| FastAPI | http://localhost:8000 |
+| Swagger UI | http://localhost:8000/docs |
+| PostgreSQL | localhost:5433 |
+
+### Stop all services
+```bash
+docker compose down
+```
 ---
 
 ## 📈 Key Business Findings

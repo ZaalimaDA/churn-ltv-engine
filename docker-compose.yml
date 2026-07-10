@@ -1,0 +1,64 @@
+version: "3.9"
+
+# ── churn-ltv-engine Docker Compose ────────────────────────────────────────
+# Services:
+#   postgres  — PostgreSQL 18 database (data warehouse)
+#   api       — FastAPI churn + LTV prediction service
+#
+# Usage:
+#   docker compose up --build        # first run
+#   docker compose up -d             # run in background
+#   docker compose down              # stop all services
+#   docker compose down -v           # stop + delete volumes (wipes DB)
+
+services:
+
+  # ── PostgreSQL Database ─────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: churn_ltv_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-churn_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-yourpassword}
+      POSTGRES_DB: ${DB_NAME:-telco_churn_db}
+    ports:
+      - "5433:5432" # host:container — use 5433 on host to avoid conflict with local Postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-churn_admin} -d ${DB_NAME:-telco_churn_db}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Service ─────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: churn_ltv_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DB_USER: ${DB_USER:-churn_admin}
+      DB_PASSWORD: ${DB_PASSWORD:-yourpassword}
+      DB_HOST: postgres # service name — Docker internal DNS
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-telco_churn_db}
+    depends_on:
+      postgres:
+        condition: service_healthy # wait for Postgres to be ready before starting API
+    volumes:
+      - ./saved_models:/app/saved_models # mount models so they can be updated without rebuild
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ── Named volumes ───────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    name: churn_ltv_postgres_data
