@@ -41,6 +41,8 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
       DB_USER: ${DB_USER:-churn_admin}
       DB_PASSWORD: ${DB_PASSWORD:-yourpassword}
@@ -57,6 +59,22 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # ── Streamlit Frontend ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: churn_ltv_frontend
+    restart: unless-stopped
+    ports:
+      - "8502:8501" # expose as 8502 to host
+    env_file:
+      - .env
+    environment:
+      API_BASE_URL: http://api:8000
+    depends_on:
+      - api
 
 # ── Named volumes ───────────────────────────────────────────────────────────
 volumes:

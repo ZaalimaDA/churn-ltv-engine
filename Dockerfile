@@ -11,7 +11,7 @@ WORKDIR /app
 
 # ── System dependencies ───────────────────────────────────────────────────
 # libgomp1 is required by XGBoost for parallel processing
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --fix-missing \
     libgomp1 \
     curl \
     && rm -rf /var/lib/apt/lists/*
